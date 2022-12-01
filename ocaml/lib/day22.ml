@@ -9,7 +9,7 @@ let lines = []
 module T : sig
   include Day.T
 end = struct
-  let name = "--- Day 0: ---"
+  let name = "--- Day 22: ---"
   let part1 = 0
   let part2 = 0
 end
