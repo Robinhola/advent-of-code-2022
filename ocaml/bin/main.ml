@@ -13,3 +13,4 @@ let solve (module M: Day.T) =
 let () = solve (module Day01.T)
 let () = solve (module Day02.T)
 let () = solve (module Day03.T)
+let () = solve (module Day04.T)
