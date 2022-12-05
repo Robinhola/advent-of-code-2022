@@ -2,7 +2,11 @@ open! Base
 open! Core
 
 let lines =
-  (try Stdio.In_channel.read_lines "input/day02.in" with _ -> [])
+  Advent.read_lines "day02" ~for_tests:
+  [ "A Y"
+  ; "B X"
+  ; "C Z"
+  ] ()
   |> List.map ~f:(String.split ~on:' ')
 ;;
 
@@ -179,6 +183,11 @@ end = struct
     |> List.map ~f:(fun (left, outcome) -> (left |> figure_it_out outcome, outcome))
     |> List.map ~f:compute_score
     |> List.fold ~init:0 ~f:Int.(+)
+  ;;
+
+  let%expect_test "" = 
+    print_s [%message (part1: int) (part2: int)];
+    [%expect {| ((part1 15) (part2 12)) |}]
   ;;
 
 end

@@ -1,7 +1,7 @@
 open! Base
 open! Core
 
-let lines = try Stdio.In_channel.read_lines "input/day01.in" with _ ->
+let lines = Advent.read_lines "day01" ~for_tests:
   [ "1000"
   ; "2000"
   ; "3000"
@@ -16,7 +16,8 @@ let lines = try Stdio.In_channel.read_lines "input/day01.in" with _ ->
   ; "9000"
   ; ""
   ; "10000"
-]
+  ] ()
+;;
 
 module T : sig
   include Day.T
@@ -71,7 +72,7 @@ end = struct
 
   let rec parse_elf l ~elf ~elves =
     match l with
-    | [] -> elves
+    | [] -> elf :: elves
     | "" :: l ->
       let elves = elf :: elves in
       parse_elf l ~elf:[] ~elves
@@ -112,6 +113,14 @@ end = struct
       3
       |> List.take calories_per_elf
       |> List.fold ~init:0 ~f:Int.(+)
+  ;;
+
+  let%expect_test "" = 
+    print_s [%message (calories_per_elf: int list)];
+    print_s [%message (part1: int) (part2: int)];
+    [%expect {|
+      (calories_per_elf (24000 11000 10000 6000 4000))
+      ((part1 24000) (part2 45000)) |}]
   ;;
 
 end

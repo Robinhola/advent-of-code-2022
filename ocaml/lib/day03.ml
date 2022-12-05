@@ -4,7 +4,14 @@ open! Core
 (* https://adventofcode.com/2022/day/3 *)
 
 let lines =
-  (try Stdio.In_channel.read_lines "input/day03.in" with _ -> [])
+  Advent.read_lines "day03" ~for_tests:
+  [ "vJrwpWtwJgWrhcsFMMfFFhFp"
+  ; "jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL"
+  ; "PmmdzqPrVvPwwTWBwg"
+  ; "wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn"
+  ; "ttgJtRGJQctTZtZT"
+  ; "CrZsJsPPZsGzwwsLwLmpwMDw"
+  ] ()
   |> List.map ~f:String.to_list
 ;;
 
@@ -73,4 +80,10 @@ end = struct
     |> List.map ~f:extract_single_character
     |> to_score
   ;;
+
+  let%expect_test "" = 
+    print_s [%message (part1: int) (part2: int)];
+    [%expect {| ((part1 157) (part2 70)) |}]
+  ;;
+
 end

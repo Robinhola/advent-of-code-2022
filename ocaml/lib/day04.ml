@@ -32,7 +32,14 @@ module Segment = struct
 end
 
 let segments =
-  (try Stdio.In_channel.read_lines "input/day04.in" with _ -> [])
+  Advent.read_lines "day04" ~for_tests:
+  [ "2-4,6-8"
+  ; "2-3,4-5"
+  ; "5-7,7-9"
+  ; "2-8,3-7"
+  ; "6-6,4-6"
+  ; "2-6,4-8"
+  ] ()
   |> List.map ~f:(fun line -> line
     |> String.split ~on:','
     |> List.map ~f:Segment.make_from_input
@@ -60,4 +67,9 @@ end = struct
   let name = "--- Day 4: Camp Cleanup ---"
   let part1 = segments |> how_many_are ~f:fully_overlapping
   let part2 = segments |> how_many_are ~f:partially_overlapping
+
+  let%expect_test "" = 
+    print_s [%message (part1: int) (part2: int)];
+    [%expect {| ((part1 2) (part2 4)) |}]
+  ;;
 end

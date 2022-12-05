@@ -1,7 +1,8 @@
 open! Base
 open! Core
 
-let lines = try Stdio.In_channel.read_lines  "input/day05.in" with _ ->
+let lines = 
+  Advent.read_lines "day05" ~for_tests:
   [ "    [D]    "
   ; "[N] [C]    "
   ; "[Z] [M] [P]"
@@ -11,7 +12,7 @@ let lines = try Stdio.In_channel.read_lines  "input/day05.in" with _ ->
   ; "move 3 from 1 to 3"
   ; "move 2 from 2 to 1"
   ; "move 1 from 1 to 2"
-  ]
+  ] ()
 ;;
 
 module State = struct
