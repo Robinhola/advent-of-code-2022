@@ -4,7 +4,7 @@ open! Core
 (* https://adventofcode.com/2022/day/3 *)
 
 let lines =
-  Stdio.In_channel.read_lines "input/day03.in"
+  (try Stdio.In_channel.read_lines "input/day03.in" with _ -> [])
   |> List.map ~f:String.to_list
 ;;
 

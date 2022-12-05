@@ -2,14 +2,14 @@ open! Base
 open! Core
 
 let lines =
-  Stdio.In_channel.read_lines "input/day02.in" 
+  (try Stdio.In_channel.read_lines "input/day02.in" with _ -> [])
   |> List.map ~f:(String.split ~on:' ')
 ;;
 
-type sign = 
+type sign =
   | Rock
   | Paper
-  | Scissors 
+  | Scissors
 ;;
 
 type outcome =
@@ -18,7 +18,7 @@ type outcome =
   | Draw
 ;;
 
-let how_to_win = function 
+let how_to_win = function
   | Rock -> Paper
   | Paper -> Scissors
   | Scissors -> Rock
@@ -31,7 +31,7 @@ let how_to_lose sign =
 ;;
 
 
-let compute_outcome them you = 
+let compute_outcome them you =
   if them |> phys_equal you then Draw
   else if (how_to_win them) |> phys_equal you then Win
   else Loss
@@ -59,9 +59,9 @@ let translate_second_part2 = function
 ;;
 
 let figure_it_out = function
-  | Win -> how_to_win 
+  | Win -> how_to_win
   | Draw -> Fn.id
-  | Loss -> how_to_lose 
+  | Loss -> how_to_lose
 ;;
 
 let sign_to_score = function
@@ -94,37 +94,37 @@ module T : sig
   include Day.T
 end = struct
   let name = "--- Day 2: Rock Paper Scissors ---"
-  
+
   (* The Elves begin to set up camp on the beach. To decide whose tent gets to
   be closest to the snack storage, a giant Rock Paper Scissors tournament is
   already in progress.
-  
+
   Rock Paper Scissors is a game between two players. Each game contains many
   rounds; in each round, the players each simultaneously choose one of Rock,
   Paper, or Scissors using a hand shape. Then, a winner for that round is
   selected: Rock defeats Scissors, Scissors defeats Paper, and Paper defeats
   Rock. If both players choose the same shape, the round instead ends in a draw.
-  
+
   Appreciative of your help yesterday, one Elf gives you an encrypted strategy
   guide (your puzzle input) that they say will be sure to help you win. "The
   first column is what your opponent is going to play: A for Rock, B for Paper,
   and C for Scissors. The second column--" Suddenly, the Elf is called away to
   help with someone's tent.
-  
+
   The second column, you reason, must be what you should play in response: X for
   Rock, Y for Paper, and Z for Scissors. Winning every time would be suspicious,
   so the responses must have been carefully chosen.
-  
+
   The winner of the whole tournament is the player with the highest score. Your
   total score is the sum of your scores for each round. The score for a single
   round is the score for the shape you selected (1 for Rock, 2 for Paper, and 3
   for Scissors) plus the score for the outcome of the round (0 if you lost, 3 if
   the round was a draw, and 6 if you won).
-  
+
   Since you can't be sure if the Elf is trying to help you or trick you, you
   should calculate the score you would get if you were to follow the strategy
   guide.
-  
+
   For example, suppose you were given the following strategy guide:
 
   A Y
@@ -144,7 +144,7 @@ end = struct
   What would your total score be if everything goes exactly according to your
   strategy guide? *)
 
-  let part1 = 
+  let part1 =
     lines
     |> List.map ~f:pair_to_signs_first_round
     |> List.map ~f:(fun (left, right) -> (right, compute_outcome left right))
@@ -173,7 +173,7 @@ end = struct
   Following the Elf's instructions for the second column, what would your total
   score be if everything goes exactly according to your strategy guide?  *)
 
-  let part2 = 
+  let part2 =
     lines
     |> List.map ~f:pair_to_signs_second_round
     |> List.map ~f:(fun (left, outcome) -> (left |> figure_it_out outcome, outcome))

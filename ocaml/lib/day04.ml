@@ -32,7 +32,7 @@ module Segment = struct
 end
 
 let segments =
-  Stdio.In_channel.read_lines "input/day04.in"
+  (try Stdio.In_channel.read_lines "input/day04.in" with _ -> [])
   |> List.map ~f:(fun line -> line
     |> String.split ~on:','
     |> List.map ~f:Segment.make_from_input
