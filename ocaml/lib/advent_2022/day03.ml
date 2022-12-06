@@ -1,5 +1,6 @@
 open! Base
 open! Core
+open! Import
 
 (* https://adventofcode.com/2022/day/3 *)
 

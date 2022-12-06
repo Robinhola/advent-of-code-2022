@@ -1,6 +1,7 @@
 open! Base
 open! Core
 open Advent_2022
+open Advent_util
 
 let () = print_endline "Welcome to 2022! Let the advent of code... begin!!!"
 

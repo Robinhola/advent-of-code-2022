@@ -1,5 +1,6 @@
 open! Base
 open! Core
+open! Import
 
 let line =
   Advent.read_lines "day06" ~for_tests:["mjqjpqmgbljsphdztnvjfqwrcgsmlb"] ()

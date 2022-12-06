@@ -1,5 +1,6 @@
 open! Base
 open! Core
+open! Import
 
 module Segment = struct
   type t =

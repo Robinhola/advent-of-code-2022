@@ -1,5 +1,5 @@
 (library
- (name advent_2022)
+ (name advent_util)
  (inline_tests)
  (libraries base core ppx_let)
  (modules_without_implementation day)
