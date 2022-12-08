@@ -13,4 +13,5 @@ let all () =
   solve_string (module Day05.T);
   solve (module Day06.T);
   solve (module Day07.T);
+  solve (module Day08.T);
 ;;
