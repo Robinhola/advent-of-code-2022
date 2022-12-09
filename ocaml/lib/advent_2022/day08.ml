@@ -1,6 +1,7 @@
 open! Base
 open! Core
 open! Import
+open Advent
 
 let lines = Advent.read_lines "day08" ~for_tests:
   [ "30373"
@@ -55,30 +56,6 @@ let%expect_test "" =
   [%expect {|
     (grid ((3 0 3 7 3) (2 5 5 1 2) (6 5 3 3 2) (3 3 5 4 9) (3 5 3 9 0))) |}]
 ;;
-
-module Direction = struct
-  type t =
-    | Right
-    | Left
-    | Up
-    | Down
-    [@@deriving sexp]
-  ;;
-
-  let inc1 x = function
-    | Right -> x + 1
-    | Left -> x - 1
-    | Up -> x - 1
-    | Down -> x + 1
-  ;;
-
-  let inc ~x ~y = function
-    | Right -> x + 1, y
-    | Left -> x - 1, y
-    | Up -> x, y - 1
-    | Down -> x, y + 1
-  ;;
-end
 
 let rec can_you_see_me ~grid ~x ~y ~dir ?(current_maximum = -1) is_seen =
   let max_x, max_y = Grid.find_bounds grid in

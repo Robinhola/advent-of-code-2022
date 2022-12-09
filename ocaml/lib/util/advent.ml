@@ -18,3 +18,27 @@ let solve_string (module M: Day.T_string) =
   printf "part1:\t%s\n" M.part1;
   printf "part2:\t%s\n" M.part2;
 ;;
+
+module Direction = struct
+  type t =
+    | Right
+    | Left
+    | Up
+    | Down
+    [@@deriving sexp]
+  ;;
+
+  let inc1 x = function
+    | Right -> x + 1
+    | Left -> x - 1
+    | Up -> x - 1
+    | Down -> x + 1
+  ;;
+
+  let inc ~x ~y = function
+    | Right -> x + 1, y
+    | Left -> x - 1, y
+    | Up -> x, y - 1
+    | Down -> x, y + 1
+  ;;
+end

@@ -5,3 +5,17 @@ val read_lines : string -> year:string -> ?for_tests:string list -> unit -> stri
 
 val solve : (module Day.T) -> unit
 val solve_string : (module Day.T_string) -> unit
+
+module Direction : sig
+  type t =
+    | Right
+    | Left
+    | Up
+    | Down
+    [@@deriving sexp]
+  ;;
+
+  val inc : x:int -> y:int -> t -> int * int
+
+  val inc1 : int -> t -> int
+end
