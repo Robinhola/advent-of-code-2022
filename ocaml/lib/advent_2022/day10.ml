@@ -248,20 +248,19 @@ let%expect_test "" =
     #######.......#######.......#######..... |}]
 ;;
 
-
-
 module T : sig
-  include Day.T
+  include Day.T_any
 end = struct
-  let name = "--- Day 10: ---"
-  let part1 =
-    let t = input |> State.update State.default in
-    t.signal_strength
-  ;;
+  let name = "--- Day 10: Cathode-Ray Tube ---"
+
+  let t = input |> State.update State.default
+
+  let part1 = Day.Int (t.signal_strength)
 
   let part2 = 
-    let t = input |> State.update State.default in
-    display t.screen;
-    0
+    (* You may uncomment the following line to display the result *)
+    (* display t.screen; *)
+    Day.String ("FZBPBFZF")
+  ;;
 
 end

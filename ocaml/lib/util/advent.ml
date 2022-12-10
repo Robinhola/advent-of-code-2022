@@ -19,6 +19,16 @@ let solve_string (module M: Day.T_string) =
   printf "part2:\t%s\n" M.part2;
 ;;
 
+let solve_ (module M: Day.T_any) = 
+  let to_string = function 
+    | Day.Int x -> Int.to_string x
+    | Day.String x -> x
+  in
+  print_endline M.name;
+  printf "part1:\t%s\n" (to_string M.part1);
+  printf "part2:\t%s\n" (to_string M.part2);
+;;
+
 module Direction = struct
   type t =
     | Right

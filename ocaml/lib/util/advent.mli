@@ -4,6 +4,7 @@ open! Core
 val read_lines : string -> year:string -> ?for_tests:string list -> unit -> string list
 
 val solve : (module Day.T) -> unit
+val solve_ : (module Day.T_any) -> unit
 val solve_string : (module Day.T_string) -> unit
 
 module Direction : sig

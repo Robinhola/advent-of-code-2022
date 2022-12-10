@@ -155,7 +155,7 @@ let rec find_best_scenic_score grid ~x ~y ~best =
 module T : sig
   include Day.T
 end = struct
-  let name = "--- Day 8: ---"
+  let name = "--- Day 8: Treetop Tree House ---"
   let grid = Grid.make lines
   let part1 =
     from_all_direction grid

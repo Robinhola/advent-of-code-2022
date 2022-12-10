@@ -199,7 +199,8 @@ let%expect_test "" =
 module T : sig
   include Day.T
 end = struct
-  let name = "--- Day 9: ---"
+  let name = "--- Day 9: Rope Bridge ---"
+
   let part1 =
     let input = lines |> Input.make in
     let t = Physics.update Physics.default Physics.move_tail_part1 input in
