@@ -73,6 +73,11 @@ module Physics = struct
     | n -> make_n (new_pair () :: rest) (n - 1)
   ;;
 
+  let%expect_test "" =
+    print_s [%message (make_n [] 9: (int * int) list)];
+    [%expect {| ("make_n [] 9" ((0 0) (0 0) (0 0) (0 0) (0 0) (0 0) (0 0) (0 0) (0 0))) |}]
+  ;;
+
   let default =
     { head = new_pair ()
     ; tail = new_pair ()
@@ -105,6 +110,7 @@ module Physics = struct
       | n when n < 0 -> Some Direction.Up
       | _ -> None
     in
+    (* Direct diagonales count like they're touching *)
     if d |> Int.equal 2 && Option.is_some horizonally && Option.is_some vertically then
       1, horizonally, vertically
     else
@@ -117,11 +123,11 @@ module Physics = struct
     else
       let x, y = tail in
       let x = x_dir
-        |> Option.map ~f:(fun dir -> Direction.inc1 x dir) 
+        |> Option.map ~f:(Direction.inc1 x) 
         |> Option.value ~default:x
       in
       let y = y_dir
-        |> Option.map ~f:(fun dir -> Direction.inc1 y dir) 
+        |> Option.map ~f:(Direction.inc1 y) 
         |> Option.value ~default:y
       in
       x, y
@@ -215,8 +221,8 @@ end = struct
   ;;
 
   let%expect_test "" = 
-    print_s [%message (part1: int)(part2: int)];
-    [%expect {| ((part1 13) (part2 6)) |}]
+    print_s [%message (part1: int)];
+    [%expect {| (part1 13) |}]
   ;;
 
 end
