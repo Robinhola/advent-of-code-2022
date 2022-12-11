@@ -37,6 +37,7 @@ module Monkey = struct
   type t =
     { name : string
     ; items : int Queue.t
+    ; modulo : int
     ; operation : (int -> int)
     ; test: (int -> int)
     } [@@deriving sexp]
@@ -70,10 +71,12 @@ module Monkey = struct
   | _ -> failwith "impossible"
   ;;
 
+  let read_modulo test =
+    List.nth_exn (test |> String.split ~on:' ') 5 |> Int.of_string
+  ;;
+
   let read_test test ~if_true ~if_false =
-    let divisible_by =
-      List.nth_exn (test |> String.split ~on:' ') 5 |> Int.of_string
-    in
+    let divisible_by = read_modulo test in
     let throw_to line =
       List.nth_exn (line |> String.split ~on:' ') 9 |> Int.of_string
     in
@@ -90,6 +93,7 @@ module Monkey = struct
     ; items = read_starting_items starting_items
     ; operation = read_operation operation
     ; test = read_test test ~if_true ~if_false
+    ; modulo = read_modulo test
     }
   ;;
 
@@ -123,27 +127,22 @@ module State = struct
     Queue.enqueue to_.items x
   ;;
 
-  let rec play_turn (t : t) (i : int) (monkey: Monkey.t) =
+  let rec play_turn reduce_worry (t : t) (i : int) (monkey: Monkey.t) =
     match monkey.items |> Queue.dequeue with
     | None -> ()
     | Some x ->
-      let x = (x |> monkey.operation) / 3 in
+      let x = x |> monkey.operation in
+      let x = x |> reduce_worry in
       let to_ = x |> monkey.test in
       throw t ~x ~to_;
       t.active.(i) <- t.active.(i) + 1;
-      play_turn t i monkey;
+      play_turn reduce_worry t i monkey;
   ;;
 
-  let rec play_turn_part2 (t : t) (i : int) (monkey: Monkey.t) =
-    match monkey.items |> Queue.dequeue with
-    | None -> ()
-    | Some x ->
-      let x = monkey.operation x in
-      let to_ = x |> monkey.test in
-      throw t ~x ~to_;
-      t.active.(i) <- t.active.(i) + 1;
-      play_turn_part2 t i monkey;
-  ;;
+
+  let play_turn_part1 = play_turn (fun x -> x / 3)
+
+  let play_turn_part2 modulo = play_turn (fun x -> x % modulo) 
 
   let play_round f t = Array.iteri ~f:(f t) t.array
 
@@ -156,7 +155,7 @@ module State = struct
 
   let%expect_test "" =
     let t = make lines in
-    let play_round = play_round play_turn in
+    let play_round = play_round play_turn_part1 in
     play_round t;
     print_s [%sexp (t.array |> Array.to_list |> List.to_string ~f:Monkey.to_string: string)];
     play_round t;
@@ -190,10 +189,14 @@ let%expect_test "" =
   print_s [%message (divisible_by_23 15: int) (divisible_by_23 46: int)];
   [%expect {|
     (t
-     (((name "Monkey 0:") (items (79 98)) (operation <fun>) (test <fun>))
-      ((name "Monkey 1:") (items (54 65 75 74)) (operation <fun>) (test <fun>))
-      ((name "Monkey 2:") (items (79 60 97)) (operation <fun>) (test <fun>))
-      ((name "Monkey 3:") (items (74)) (operation <fun>) (test <fun>))))
+     (((name "Monkey 0:") (items (79 98)) (modulo 23) (operation <fun>)
+       (test <fun>))
+      ((name "Monkey 1:") (items (54 65 75 74)) (modulo 19) (operation <fun>)
+       (test <fun>))
+      ((name "Monkey 2:") (items (79 60 97)) (modulo 13) (operation <fun>)
+       (test <fun>))
+      ((name "Monkey 3:") (items (74)) (modulo 17) (operation <fun>)
+       (test <fun>))))
     (("operation_19 1" 19) ("operation_19 2" 38))
     (("divisible_by_23 15" 3) ("divisible_by_23 46" 2)) |}]
 ;;
@@ -208,7 +211,7 @@ let rec multiply_first_two max1 max2 = function
 
 let%expect_test "" =
   let t = State.make lines in
-  let t = State.play_n_rounds State.play_turn t 20 in
+  let t = State.play_n_rounds State.play_turn_part1 t 20 in
   let result = multiply_first_two 0 0 (t.active |> Array.to_list) in
   print_s [%message (t.active: int array)];
   print_s [%message (result: int)];
@@ -217,13 +220,26 @@ let%expect_test "" =
     (result 10605) |}]
 ;;
 
+let super_modulo (t : State.t) = 
+  t.array 
+  |> Array.to_list
+  |> List.map ~f:(fun m -> m.modulo)
+  |> List.fold ~init:1 ~f:Int.( * )
+;;
+
+let part2_ () =
+  let t = State.make lines in
+  let super_modulo = super_modulo t in
+  State.play_n_rounds (State.play_turn_part2 super_modulo) t 10_000
+;;
+
 let%expect_test "" =
   let t = State.make lines in
-  let t = State.play_n_rounds State.play_turn_part2 t 20 in
+  let super_modulo = super_modulo t in
+  let t = State.play_n_rounds (State.play_turn_part2 super_modulo) t 20 in 
   print_s [%message (t.active: int array)];
   [%expect {|
-    (t.active (98 98 9 103))
-    (result 10094) |}]
+    (t.active (99 97 8 103)) |}]
 ;;
 
 
@@ -233,21 +249,19 @@ end = struct
   let name = "--- Day 11: ---"
   let part1 =
     let t = State.make lines in
-    let t = State.play_n_rounds State.play_turn t 20 in
+    let t = State.play_n_rounds State.play_turn_part1 t 20 in
     let result = multiply_first_two 0 0 (t.active |> Array.to_list) in
     result
   ;;
 
   let part2 =
-    let t = State.make lines in
-    let t = State.play_n_rounds State.play_turn_part2 t 10_000 in
-    print_s [%message (t.active : int array)];
+    let t = part2_ () in
     let result = multiply_first_two 0 0 (t.active |> Array.to_list) in
     result
   ;;
 
   let%expect_test "" =
     print_s [%message (part1 : int) (part2: int)];
-    [%expect {| ((part1 10605) (part2 2637145755)) |}]
+    [%expect {| ((part1 10605) (part2 2713310158)) |}]
   ;;
 end
