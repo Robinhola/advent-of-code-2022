@@ -17,4 +17,5 @@ let all () =
   solve (module Day09.T);
   solve_ (module Day10.T);
   solve (module Day11.T);
+  solve (module Day12.T);
 ;;
