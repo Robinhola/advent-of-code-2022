@@ -118,7 +118,7 @@ module Input = struct
     |> List.filter ~f:(fun p -> not (Set.exists seen ~f:(IntPairs.equal p)))
   ;;
 
-  let bfs f t is_done =
+  let bfs ~f ~is_done t =
     let rec search t to_visit seen =
       let p, steps = Queue.dequeue_exn to_visit in
       if is_done p then steps
@@ -132,13 +132,6 @@ module Input = struct
     in
     search t (Queue.of_list [t.start, 0]) (PairsSet.of_list [t.start])
   ;;
-
-  let%expect_test "" = 
-    let t = make lines in
-    print_s [%message (bfs part1_f t (IntPairs.equal t.end_): int)];
-    [%expect {| ("bfs part1_f t (IntPairs.equal t.end_)" 31) |}]
-  ;;
-
 end
 
 module T : sig
@@ -148,13 +141,17 @@ end = struct
 
   let input = Input.make lines 
 
-  let part1 = Input.bfs Input.part1_f input (IntPairs.equal input.end_)
+  let part1 = Input.bfs
+    input
+    ~f:Input.part1_f
+    ~is_done:(IntPairs.equal input.end_)
+  ;;
 
   let part2 = 
-    let input = { input with start = input.end_ ; end_ = input.start } in
-    Input.bfs Input.part2_f input (
-      fun (x, y) -> input.grid.(y).(x) |> Int.equal 0
-    )
+    Input.bfs
+      { input with start = input.end_ ; end_ = input.start }
+      ~f:Input.part2_f
+      ~is_done:(fun (x, y) -> input.grid.(y).(x) |> Int.equal 0)
   ;;
 
   let%expect_test "" =
