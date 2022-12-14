@@ -187,7 +187,6 @@ end = struct
     let sorted = input |> List.sort ~compare:Input.compare |> List.rev in
     let ia, _ = sorted |> List.findi_exn ~f:(fun _ x -> Input.equal x decoder_a) in
     let ib, _ = sorted |> List.findi_exn ~f:(fun _ x -> Input.equal x decoder_b) in
-    print_s [%message (sorted: Input.t list)];
     (ia + 1) * (ib + 1)
   ;;
   let part2 = part2_ ()
